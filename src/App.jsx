@@ -12,7 +12,7 @@ function App() {
 
   // フォーム状態
   const [newItem, setNewItem] = useState({ name: '', unit: '個', min_quantity: 0, inventory_order: 0 })
-  const [transactionForm, setTransactionForm] = useState({ item_id: '', type: 'in', quantity: 0, note: '' })
+  const [transactionForm, setTransactionForm] = useState({ item_id: '', type: 'in', quantity: '', note: '' })
   const [inventoryData, setInventoryData] = useState({})
 
   // データ読み込み
@@ -82,7 +82,7 @@ function App() {
     const itemId = parseInt(transactionForm.item_id)
     const quantity = parseFloat(transactionForm.quantity)
     
-    if (isNaN(itemId) || isNaN(quantity) || quantity <= 0) {
+    if (isNaN(itemId) || transactionForm.quantity === '' || isNaN(quantity) || quantity <= 0) {
       alert('正しい数量を入力してください')
       return
     }
@@ -332,7 +332,7 @@ function App() {
               </div>
               <div className="form-group">
                 <label>数量 *</label>
-                <input type="number" value={transactionForm.quantity} onChange={e => setTransactionForm({ ...transactionForm, quantity: parseFloat(e.target.value) || 0 })} required min="0" step="0.1" />
+                <input type="number" value={transactionForm.quantity} onChange={e => setTransactionForm({ ...transactionForm, quantity: e.target.value })} required min="0" step="0.1" placeholder="数量を入力" />
               </div>
               <div className="form-group">
                 <label>メモ</label>
