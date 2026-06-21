@@ -397,7 +397,7 @@ button:not(.primary):hover {
   flex-wrap: wrap;
 }
 
-.action-btn {
+.detail-actions .action-btn {
   flex: 1;
   min-width: 120px;
   padding: 14px;
@@ -410,26 +410,26 @@ button:not(.primary):hover {
   box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
-.action-btn:hover {
+.detail-actions .action-btn:hover {
   transform: translateY(-2px);
   box-shadow: 0 4px 8px rgba(0,0,0,0.15);
 }
 
-.in-btn {
+.detail-actions .action-btn.in-btn {
   background: #4CAF50;
   color: white;
 }
 
-.in-btn:hover {
+.detail-actions .action-btn.in-btn:hover {
   background: #43a047;
 }
 
-.out-btn {
+.detail-actions .action-btn.out-btn {
   background: #f44336;
   color: white;
 }
 
-.out-btn:hover {
+.detail-actions .action-btn.out-btn:hover {
   background: #e53935;
 }
 
