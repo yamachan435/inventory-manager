@@ -51,7 +51,7 @@ body {
 }
 
 .nav button:hover {
-  background: #bdbdbd;
+  background: #90caf9;
 }
 
 .nav button.active:hover {
@@ -94,15 +94,18 @@ body {
 }
 
 .item-card {
-  background: #fafafa;
-  padding: 16px;
-  border-radius: 8px;
-  transition: transform 0.2s;
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  transition: all 0.3s ease;
+  border: 1px solid #e8e8e8;
 }
 
 .item-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  transform: translateY(-3px);
+  box-shadow: 0 6px 20px rgba(0,0,0,0.12);
+  border-color: #2196F3;
 }
 
 .item-header {
@@ -143,28 +146,35 @@ body {
 .item-actions button:first-child {
   background: #4CAF50;
   color: white;
+  box-shadow: 0 2px 4px rgba(76, 175, 80, 0.3);
 }
 
 .item-actions button:first-child:hover {
-  background: #45a049;
+  background: #43a047;
+  box-shadow: 0 4px 8px rgba(76, 175, 80, 0.4);
+  transform: translateY(-1px);
 }
 
 .item-actions button:last-child {
   background: #f44336;
   color: white;
+  box-shadow: 0 2px 4px rgba(244, 67, 54, 0.3);
 }
 
 .item-actions button:last-child:hover {
-  background: #da190b;
+  background: #e53935;
+  box-shadow: 0 4px 8px rgba(244, 67, 54, 0.4);
+  transform: translateY(-1px);
 }
 
 .days-info {
   font-size: 13px;
   color: #666;
-  padding: 6px 10px;
-  background: white;
-  border-radius: 4px;
+  padding: 8px 12px;
+  background: #f5f5f5;
+  border-radius: 6px;
   display: inline-block;
+  border-left: 3px solid #2196F3;
 }
 
 .form-view form,
@@ -187,16 +197,19 @@ body {
 }
 
 .form-group input {
-  padding: 12px;
-  border: 1px solid #ddd;
-  border-radius: 6px;
+  padding: 14px;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
   font-size: 16px;
-  transition: border-color 0.2s;
+  transition: all 0.2s;
+  background: #fafafa;
 }
 
 .form-group input:focus {
   outline: none;
   border-color: #2196F3;
+  background: white;
+  box-shadow: 0 0 0 3px rgba(33, 150, 243, 0.1);
 }
 
 .form-group input:disabled {
@@ -236,10 +249,15 @@ button:not(.primary):hover {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 12px;
+  padding: 16px;
   background: #fafafa;
-  border-radius: 6px;
+  border-radius: 8px;
   gap: 12px;
+  transition: background 0.2s;
+}
+
+.inventory-row:hover {
+  background: #f0f0f0;
 }
 
 .inventory-row label {
@@ -250,15 +268,18 @@ button:not(.primary):hover {
 .inventory-row input {
   width: 120px;
   padding: 10px;
-  border: 1px solid #ddd;
+  border: 2px solid #e0e0e0;
   border-radius: 6px;
   font-size: 16px;
   text-align: right;
+  background: white;
+  transition: all 0.2s;
 }
 
 .inventory-row input:focus {
   outline: none;
   border-color: #2196F3;
+  box-shadow: 0 0 0 3px rgba(33, 150, 243, 0.1);
 }
 
 /* レスポンシブ対応 */
