@@ -79,7 +79,7 @@ function App() {
     e.preventDefault()
     
     const itemId = parseInt(transactionForm.item_id)
-    const quantity = parseInt(transactionForm.quantity)
+    const quantity = parseFloat(transactionForm.quantity)
     
     if (isNaN(itemId) || isNaN(quantity) || quantity <= 0) {
       alert('正しい数量を入力してください')
@@ -131,7 +131,7 @@ function App() {
     
     try {
       for (const [itemId, quantity] of Object.entries(inventoryData)) {
-        const qty = parseInt(quantity)
+        const qty = parseFloat(quantity)
         if (isNaN(qty) || qty < 0) continue
         
         const item = items.find(i => i.id === parseInt(itemId))
@@ -251,11 +251,11 @@ function App() {
               </div>
               <div className="form-group">
                 <label>アラート閾値</label>
-                <input type="number" value={newItem.min_quantity} onChange={e => setNewItem({ ...newItem, min_quantity: parseInt(e.target.value) })} />
+                <input type="number" value={newItem.min_quantity} onChange={e => setNewItem({ ...newItem, min_quantity: parseInt(e.target.value) || 0 })} />
               </div>
               <div className="form-group">
                 <label>棚卸順（数字、小さい順）</label>
-                <input type="number" value={newItem.inventory_order} onChange={e => setNewItem({ ...newItem, inventory_order: parseInt(e.target.value) })} />
+                <input type="number" value={newItem.inventory_order} onChange={e => setNewItem({ ...newItem, inventory_order: parseInt(e.target.value) || 0 })} />
               </div>
               <button type="submit" className="primary">追加</button>
               <button type="button" onClick={() => setView('list')}>キャンセル</button>
@@ -273,7 +273,7 @@ function App() {
               </div>
               <div className="form-group">
                 <label>数量 *</label>
-                <input type="number" value={transactionForm.quantity} onChange={e => setTransactionForm({ ...transactionForm, quantity: parseInt(e.target.value) })} required min="1" />
+                <input type="number" value={transactionForm.quantity} onChange={e => setTransactionForm({ ...transactionForm, quantity: parseFloat(e.target.value) || 0 })} required min="0" step="0.1" />
               </div>
               <div className="form-group">
                 <label>メモ</label>
