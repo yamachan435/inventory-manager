@@ -5,9 +5,10 @@ import './App.css'
 function App() {
   const [items, setItems] = useState([])
   const [transactions, setTransactions] = useState([])
-  const [view, setView] = useState('list') // list, add, inventory
+  const [view, setView] = useState('list') // list, add, inventory, detail
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
+  const [selectedItem, setSelectedItem] = useState(null)
 
   // フォーム状態
   const [newItem, setNewItem] = useState({ name: '', unit: '個', min_quantity: 0, inventory_order: 0 })
@@ -184,6 +185,12 @@ function App() {
   // 棚卸順でソート
   const inventorySortedItems = [...items].sort((a, b) => a.inventory_order - b.inventory_order)
 
+  // アイテム詳細表示
+  const showItemDetail = (item) => {
+    setSelectedItem(item)
+    setView('detail')
+  }
+
   if (loading) {
     return <div className="loading">読み込み中...</div>
   }
@@ -216,24 +223,80 @@ function App() {
             {items.length === 0 ? (
               <p className="empty">品目がありません。まずは品目を追加してください。</p>
             ) : (
-              <div className="item-list">
-                {items.map(item => (
-                  <div key={item.id} className="item-card" style={{ borderLeft: `4px solid ${getAlertColor(item)}` }}>
-                    <div className="item-header">
-                      <h3>{item.name}</h3>
-                      <span className="quantity">{item.current_quantity} {item.unit}</span>
-                    </div>
-                    <div className="item-actions">
-                      <button onClick={() => { setTransactionForm({ ...transactionForm, item_id: item.id, type: 'in' }); setView('transaction') }}>入庫</button>
-                      <button onClick={() => { setTransactionForm({ ...transactionForm, item_id: item.id, type: 'out' }); setView('transaction') }}>出庫</button>
-                    </div>
-                    {calculateDays(item.id) !== null && (
-                      <div className="days-info">在庫日数: 約{calculateDays(item.id)}日</div>
-                    )}
-                  </div>
-                ))}
+              <div className="table-container">
+                <table className="item-table">
+                  <thead>
+                    <tr>
+                      <th>ID</th>
+                      <th>品目名</th>
+                      <th>現在在庫</th>
+                      <th>単位</th>
+                      <th>状態</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {items.map(item => (
+                      <tr key={item.id} onClick={() => showItemDetail(item)} className="table-row">
+                        <td>{item.id}</td>
+                        <td>{item.name}</td>
+                        <td className="quantity-cell">{item.current_quantity}</td>
+                        <td>{item.unit}</td>
+                        <td>
+                          <span className="status-badge" style={{ background: getAlertColor(item) }}>
+                            {item.current_quantity <= 0 ? '切迫' : item.current_quantity <= item.min_quantity ? '注意' : '正常'}
+                          </span>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
               </div>
             )}
+          </div>
+        )}
+
+        {view === 'detail' && selectedItem && (
+          <div className="detail-view">
+            <h2>アイテム詳細</h2>
+            <div className="detail-card">
+              <div className="detail-header">
+                <h3>{selectedItem.name}</h3>
+                <span className="quantity-badge">{selectedItem.current_quantity} {selectedItem.unit}</span>
+              </div>
+              
+              <div className="detail-info">
+                <div className="info-row">
+                  <span className="info-label">ID:</span>
+                  <span className="info-value">{selectedItem.id}</span>
+                </div>
+                <div className="info-row">
+                  <span className="info-label">最小在庫数:</span>
+                  <span className="info-value">{selectedItem.min_quantity}</span>
+                </div>
+                <div className="info-row">
+                  <span className="info-label">棚卸順:</span>
+                  <span className="info-value">{selectedItem.inventory_order}</span>
+                </div>
+                {calculateDays(selectedItem.id) !== null && (
+                  <div className="info-row">
+                    <span className="info-label">在庫日数:</span>
+                    <span className="info-value">約{calculateDays(selectedItem.id)}日</span>
+                  </div>
+                )}
+              </div>
+
+              <div className="detail-actions">
+                <button onClick={() => { setTransactionForm({ ...transactionForm, item_id: selectedItem.id, type: 'in' }); setView('transaction') }} className="action-btn in-btn">
+                  入庫
+                </button>
+                <button onClick={() => { setTransactionForm({ ...transactionForm, item_id: selectedItem.id, type: 'out' }); setView('transaction') }} className="action-btn out-btn">
+                  出庫
+                </button>
+                <button onClick={() => setView('list')} className="action-btn back-btn">
+                  戻る
+                </button>
+              </div>
+            </div>
           </div>
         )}
 
@@ -291,7 +354,7 @@ function App() {
             <form onSubmit={handleInventory}>
               {inventorySortedItems.map(item => (
                 <div key={item.id} className="inventory-row">
-                  <label>{item.name}（現在: {item.current_quantity} {item.unit}）</label>
+                  <label>{item.name}（帳簿: {item.current_quantity} {item.unit}）</label>
                   <input
                     type="number"
                     value={inventoryData[item.id] || ''}
