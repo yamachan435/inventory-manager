@@ -227,20 +227,16 @@ function App() {
                 <table className="item-table">
                   <thead>
                     <tr>
-                      <th>ID</th>
                       <th>品目名</th>
                       <th>現在在庫</th>
-                      <th>単位</th>
                       <th>状態</th>
                     </tr>
                   </thead>
                   <tbody>
                     {items.map(item => (
                       <tr key={item.id} onClick={() => showItemDetail(item)} className="table-row">
-                        <td>{item.id}</td>
                         <td>{item.name}</td>
-                        <td className="quantity-cell">{item.current_quantity}</td>
-                        <td>{item.unit}</td>
+                        <td className="quantity-cell">{item.current_quantity} {item.unit}</td>
                         <td>
                           <span className="status-badge" style={{ background: getAlertColor(item) }}>
                             {item.current_quantity <= 0 ? '切迫' : item.current_quantity <= item.min_quantity ? '注意' : '正常'}
