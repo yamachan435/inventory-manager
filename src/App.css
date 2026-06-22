@@ -4,6 +4,10 @@
   box-sizing: border-box;
 }
 
+html {
+  color-scheme: light;
+}
+
 body {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Hiragino Kaku Gothic ProN', 'Hiragino Sans', Meiryo, sans-serif;
   background: #f5f5f5;
@@ -15,6 +19,7 @@ body {
   max-width: 100%;
   margin: 0;
   padding: 10px;
+  color-scheme: light;
 }
 
 @media (min-width: 768px) {
@@ -36,6 +41,7 @@ body {
 .header h1 {
   font-size: 24px;
   margin-bottom: 15px;
+  color: #333;
 }
 
 .nav {
@@ -142,6 +148,10 @@ body {
 
 .table-row:active {
   background: #e3f2fd;
+}
+
+.name-cell {
+  text-align: left;
 }
 
 .quantity-cell {
@@ -275,6 +285,22 @@ body {
   font-size: 16px;
   transition: all 0.2s;
   background: #fafafa;
+  color: #333;
+  appearance: none;
+  -webkit-appearance: none;
+  color-scheme: light;
+}
+
+.form-group input::placeholder {
+  color: #999;
+}
+
+.form-group input:-webkit-autofill,
+.form-group input:-webkit-autofill:hover,
+.form-group input:-webkit-autofill:focus {
+  -webkit-text-fill-color: #333;
+  -webkit-box-shadow: 0 0 0px 1000px #fafafa inset;
+  transition: background-color 5000s ease-in-out 0s;
 }
 
 .form-group input:focus {
@@ -282,6 +308,7 @@ body {
   border-color: #2196F3;
   background: white;
   box-shadow: 0 0 0 3px rgba(33, 150, 243, 0.1);
+  color: #333;
 }
 
 .form-group input:disabled {
@@ -470,13 +497,78 @@ button:not(.primary):hover {
   font-size: 16px;
   text-align: right;
   background: white;
+  color: #333;
   transition: all 0.2s;
+  appearance: none;
+  -webkit-appearance: none;
+  color-scheme: light;
+}
+
+.inventory-row input::placeholder {
+  color: #999;
+}
+
+.inventory-row input:-webkit-autofill,
+.inventory-row input:-webkit-autofill:hover,
+.inventory-row input:-webkit-autofill:focus {
+  -webkit-text-fill-color: #333;
+  -webkit-box-shadow: 0 0 0px 1000px white inset;
+  transition: background-color 5000s ease-in-out 0s;
 }
 
 .inventory-row input:focus {
   outline: none;
   border-color: #2196F3;
   box-shadow: 0 0 0 3px rgba(33, 150, 243, 0.1);
+  color: #333;
+}
+
+.book-value-btn {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 6px;
+  background: #e0e0e0;
+  color: #333;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+
+.book-value-btn:hover {
+  background: #bdbdbd;
+}
+
+.sort-controls {
+  margin-bottom: 16px;
+  display: flex;
+  gap: 10px;
+}
+
+.sort-controls button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px;
+  background: #e0e0e0;
+  color: #333;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.2s;
+}
+
+.sort-controls button:hover {
+  background: #bdbdbd;
+}
+
+.sort-controls button.active {
+  background: #2196F3;
+  color: white;
+}
+
+.sort-controls button.active:hover {
+  background: #1976D2;
 }
 
 /* レスポンシブ対応 */

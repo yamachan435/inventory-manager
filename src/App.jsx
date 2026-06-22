@@ -9,16 +9,47 @@ function App() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
   const [selectedItem, setSelectedItem] = useState(null)
+  const [sortByUrgency, setSortByUrgency] = useState(false)
 
   // フォーム状態
   const [newItem, setNewItem] = useState({ name: '', unit: '個', min_quantity: 0, inventory_order: 0 })
   const [transactionForm, setTransactionForm] = useState({ item_id: '', type: 'in', quantity: '', note: '' })
   const [inventoryData, setInventoryData] = useState({})
 
+  // ブラウザの戻る・進むボタン対応
+  useEffect(() => {
+    const handlePopState = (event) => {
+      if (event.state && event.state.view) {
+        setView(event.state.view)
+        if (event.state.selectedItemId) {
+          const item = items.find(i => i.id === event.state.selectedItemId)
+          setSelectedItem(item || null)
+        } else {
+          setSelectedItem(null)
+        }
+      } else {
+        setView('list')
+        setSelectedItem(null)
+      }
+    }
+
+    window.addEventListener('popstate', handlePopState)
+    return () => window.removeEventListener('popstate', handlePopState)
+  }, [items])
+
   // データ読み込み
   useEffect(() => {
     loadData()
   }, [])
+
+  // viewが変わったら履歴をpush
+  useEffect(() => {
+    const state = { view }
+    if (selectedItem) {
+      state.selectedItemId = selectedItem.id
+    }
+    window.history.pushState(state, '', `#${view}`)
+  }, [view, selectedItem])
 
   const loadData = async () => {
     try {
@@ -185,10 +216,42 @@ function App() {
   // 棚卸順でソート
   const inventorySortedItems = [...items].sort((a, b) => a.inventory_order - b.inventory_order)
 
+  // ID順でソート
+  const idSortedItems = [...items].sort((a, b) => a.id - b.id)
+
+  // 切迫度順でソート（残り日数が少ない順、在庫が少ない順）
+  const urgencySortedItems = [...items].sort((a, b) => {
+    const daysA = calculateDays(a.id) ?? 999
+    const daysB = calculateDays(b.id) ?? 999
+    if (daysA !== daysB) return daysA - daysB
+    return a.current_quantity - b.current_quantity
+  })
+
   // アイテム詳細表示
   const showItemDetail = (item) => {
     setSelectedItem(item)
     setView('detail')
+  }
+
+  // 棚卸で帳簿通りの数量をセット
+  const setInventoryToBookValue = (itemId) => {
+    const item = items.find(i => i.id === itemId)
+    if (item) {
+      setInventoryData({ ...inventoryData, [itemId]: item.current_quantity })
+    }
+  }
+
+  // 帳簿通りボタンのクリックフィードバック
+  const handleBookValueClick = (itemId) => {
+    setInventoryToBookValue(itemId)
+    // 入力欄にフォーカスして変更を強調
+    setTimeout(() => {
+      const input = document.querySelector(`input[data-item-id="${itemId}"]`)
+      if (input) {
+        input.focus()
+        input.select()
+      }
+    }, 50)
   }
 
   if (loading) {
@@ -220,6 +283,14 @@ function App() {
         {view === 'list' && (
           <div className="list-view">
             <h2>在庫一覧</h2>
+            <div className="sort-controls">
+              <button 
+                onClick={() => setSortByUrgency(!sortByUrgency)} 
+                className={sortByUrgency ? 'active' : ''}
+              >
+                {sortByUrgency ? '通常順' : '切迫度順'}
+              </button>
+            </div>
             {items.length === 0 ? (
               <p className="empty">品目がありません。まずは品目を追加してください。</p>
             ) : (
@@ -227,15 +298,15 @@ function App() {
                 <table className="item-table">
                   <thead>
                     <tr>
-                      <th>品目名</th>
+                      <th className="name-cell">品目名</th>
                       <th>現在在庫</th>
                       <th>状態</th>
                     </tr>
                   </thead>
                   <tbody>
-                    {items.map(item => (
+                    {(sortByUrgency ? urgencySortedItems : idSortedItems).map(item => (
                       <tr key={item.id} onClick={() => showItemDetail(item)} className="table-row">
-                        <td>{item.name}</td>
+                        <td className="name-cell">{item.name}</td>
                         <td className="quantity-cell">{item.current_quantity} {item.unit}</td>
                         <td>
                           <span className="status-badge" style={{ background: getAlertColor(item) }}>
@@ -356,7 +427,15 @@ function App() {
                     value={inventoryData[item.id] || ''}
                     onChange={e => setInventoryData({ ...inventoryData, [item.id]: e.target.value })}
                     placeholder="実在庫数を入力"
+                    data-item-id={item.id}
                   />
+                  <button 
+                    type="button" 
+                    className="book-value-btn"
+                    onClick={() => handleBookValueClick(item.id)}
+                  >
+                    帳簿通り
+                  </button>
                 </div>
               ))}
               <button type="submit" className="primary">棚卸完了</button>
